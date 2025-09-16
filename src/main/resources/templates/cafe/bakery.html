@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카페빈 - 베이커리</title>
+  <style>
+    /* 기존 스타일 유지 */
+    #beanGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    .bean-card {
+      text-align: center;
+    }
+    .bean-card img {
+      width: 100%;
+      max-width: 250px;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+    }
+    .bean-card p {
+      margin: 5px 0;
+      font-weight: bold;
+    }
+    .remove-btn {
+      margin-left: 10px;
+      padding: 2px 6px;
+      font-size: 0.8em;
+      border: none;
+      border-radius: 4px;
+      background-color: #dc3545;
+      color: #fff;
+      cursor: pointer;
+    }
+    .remove-btn:hover { background-color: #c82333; }
+    .page-title {
+      text-align: center;
+      font-size: 2em;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    #selectionList {
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+    #selectionList h3 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #selectionTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    #selectionTable th,
+    #selectionTable td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    #summaryTotal {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #orderSection {
+      text-align: center;
+      margin: 20px;
+    }
+    #orderSection button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+    #orderSection button:hover { background-color: #45a049; }
+
+    /* 모달 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+      padding-top: 60px;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    #modal-image {
+      display: block;
+      width: 80%;
+      max-width: 250px;
+      margin: 0 auto 20px auto;
+    }
+    #modal-description {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+    }
+    .modal-options {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .modal-options input {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .add-to-cart-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .add-to-cart-btn:hover {
+      background-color: #0069d9;
+    }
+  </style>
+</head>
+<body>
+  <section layout:fragment="content">
+    <div class="page-title">베이커리</div>
+    <div id="beanGrid"></div>
+
+    <div id="beanModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="modal-title" style="text-align: center;"></h3>
+        <img id="modal-image" src="" alt="메뉴 이미지">
+        <div id="modal-description"></div>
+        <div class="modal-options">
+          <label for="qty-input">수량:</label>
+          <input type="number" id="qty-input" value="1" min="1">
+        </div>
+        <button id="addToCartBtn" class="add-to-cart-btn">장바구니에 담기</button>
+      </div>
+    </div>
+
+    <div id="selectionList">
+      <h3>선택 목록</h3>
+      <table id="selectionTable">
+        <thead>
+          <tr>
+            <th>상품명</th>
+            <th>수량</th>
+            <th>소계</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="selectionItems"></tbody>
+      </table>
+      <div id="summaryTotal">총 가격: 0원</div>
+    </div>
+    <div id="orderSection">
+      <button id="orderBtn" type="button" onclick="placeOrder()">주문하기</button>
+    </div>
+    <script>
+      var bakeryData = [
+        { key: 'butter_pretzels', name: '버터프레첼', price: 7000, img: '/images/butter_pretzels.jpg', desc: '바삭하고 겹겹이 살아있는 프랑스 정통 크루아상' },
+        { key: 'lye-roll', name: '레이 롤', price:3000, img: '/images/lye-roll.jpg', desc: '부드러운 식감의 레이 롤입니다.' },
+        { key:'keuluasang', name:  '크루아상', price:3000, img: '/images/keuluasang.jpg', desc: '바삭하고 고소한 프랑스 크루아상입니다.' },
+        { key: 'peullein beigeul', name: '플레인베이글', price: 5000, img: '/images/beigeul.jpg', desc: '담백하고 쫄깃한 플레인 베이글입니다.' },
+        { key: 'scone', name: '스콘', price:2000, img: '/images/scone.jpg', desc: '따뜻한 우유와 잘 어울리는 스콘입니다.' }
+      ];
+      var selections = [];
+
+      var modal = document.getElementById("beanModal");
+      var span = document.getElementsByClassName("close")[0];
+      var addToCartBtn = document.getElementById("addToCartBtn");
+      var currentItem = null;
+
+      function initItems() {
+        var grid = document.getElementById('beanGrid');
+        bakeryData.forEach(function(item) {
+          var card = document.createElement('div');
+          card.className = 'bean-card';
+
+          var img = document.createElement('img');
+          img.src = item.img;
+          img.alt = item.name;
+          img.width = 250;
+          img.height = 250; 
+          img.onclick = function() { showModal(item); };
+          img.onerror = function() { this.src = '/images/bread_default.png'; }; // 기본 이미지 경로 수정
+
+          card.appendChild(img);
+
+          var nameP = document.createElement('p');
+          nameP.textContent = item.name;
+          card.appendChild(nameP);
+
+          var priceP = document.createElement('p');
+          priceP.textContent = item.price.toLocaleString() + '원';
+          card.appendChild(priceP);
+
+          grid.appendChild(card);
+        });
+      }
+
+      function showModal(item) {
+        currentItem = item;
+        document.getElementById('modal-title').textContent = item.name;
+        document.getElementById('modal-image').src = item.img;
+        document.getElementById('modal-description').textContent = item.desc;
+
+        document.getElementById('qty-input').value = 1;
+        modal.style.display = "block";
+      }
+
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      addToCartBtn.onclick = function() {
+        var quantity = parseInt(document.getElementById('qty-input').value);
+        if (currentItem && quantity > 0) {
+          addSelection(currentItem, quantity);
+          modal.style.display = "none";
+        } else {
+          alert('수량을 1 이상으로 입력해주세요.');
+        }
+      }
+
+      function addSelection(item, quantity) {
+        var existing = selections.find(function(selectedItem) {
+          return selectedItem.name === item.name;
+        });
+        if (existing) {
+          existing.qty += quantity;
+          existing.subtotal = item.price * existing.qty;
+        } else {
+          selections.push({
+            name: item.name,
+            qty: quantity,
+            subtotal: item.price * quantity
+          });
+        }
+        renderSelection();
+      }
+
+      function removeSelection(index) {
+        selections.splice(index, 1);
+        renderSelection();
+      }
+
+      function renderSelection() {
+        var tbody = document.getElementById('selectionItems');
+        tbody.innerHTML = '';
+        var total = 0;
+        selections.forEach(function(item, index) {
+          var tr = document.createElement('tr');
+
+          var tdName = document.createElement('td');
+          tdName.textContent = item.name;
+          tr.appendChild(tdName);
+
+          var tdQty = document.createElement('td');
+          tdQty.textContent = item.qty;
+          tr.appendChild(tdQty);
+
+          var tdSubtotal = document.createElement('td');
+          tdSubtotal.textContent = item.subtotal.toLocaleString() + '원';
+          tr.appendChild(tdSubtotal);
+
+          var tdRemove = document.createElement('td');
+          var removeBtn = document.createElement('button');
+          removeBtn.textContent = '취소';
+          removeBtn.className = 'remove-btn';
+          removeBtn.onclick = function() { removeSelection(index); };
+          tdRemove.appendChild(removeBtn);
+          tr.appendChild(tdRemove);
+
+          tbody.appendChild(tr);
+          total += item.subtotal;
+        });
+        document.getElementById('summaryTotal').textContent = '총 가격: ' + total.toLocaleString() + '원';
+      }
+
+      function placeOrder() {
+        if (selections.length === 0) {
+          alert('선택된 상품이 없습니다.');
+          return;
+        }
+        alert('주문이 완료되었습니다! 총 ' + selections.length + '개의 항목, ' +
+              document.getElementById('summaryTotal').textContent);
+      }
+
+      window.addEventListener('DOMContentLoaded', initItems);
+    </script>
+  </section>
+</body>
+</html>

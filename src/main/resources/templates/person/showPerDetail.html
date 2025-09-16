@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section layout:fragment="content">
+	<!-- html 주석 -->
+	<table>
+		<thead>
+			<tr>
+				<th>이름</th>
+				<th>전화</th>
+				<th>주소</th>
+				<th>이메일</th>
+				<th>카톡ID</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td th:text="${personDetail.name}"></td>
+				<td th:text="${personDetail.tel}"></td>
+				<td th:text="${personDetail.addr}"></td>
+				<td th:text="${personDetail.email}"></td>
+				<td th:text="${personDetail.kakao}"></td>
+			</tr>
+		</tbody>
+	</table><br>
+	<button class="btn btn-primary" th:onclick="|location.href='@{/insPerForm}'|">데이터 추가</button>
+	<!-- <a th:href="@{/insPerForm}">데이터 추가</a> -->
+	<button class="btn btn-primary" th:onclick="|location.href='@{/getBoardDbList}'|">데이터 보기</button>
+	<button class="btn btn-primary" th:onclick="|location.href='@{/deletePerson/{seq}(seq=${personDetail.seq})}'|">데이터 삭제</button>
+	<button class="btn btn-primary" th:onclick="|location.href='@{/editPerForm/{seq}(seq=${personDetail.seq})}'|">데이터 수정</button>
+	</section>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

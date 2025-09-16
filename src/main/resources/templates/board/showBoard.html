@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section layout:fragment="content">
+	<h1>프론트에 보여지는 뷰 화면(Person 객체 정보)</h1>
+	<h3 th:text="${person.name}"></h3>
+	<h3 th:text="${person.tel}"></h3>
+	<h3 th:text="${person.addr}"></h3>
+	</section>
+</body>
+</html>

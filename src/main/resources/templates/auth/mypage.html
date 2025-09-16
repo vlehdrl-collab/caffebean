@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지 - Cafe♡Bean</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F5E6D3, #E8C5A0, #D2691E);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .profile-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: #8B4513;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #E8C5A0;
+        }
+        
+        .profile-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #333;
+            width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .info-value {
+            color: #666;
+            flex: 1;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #8B4513;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #8B4513;
+            border: 2px solid #8B4513;
+        }
+        
+        .btn-secondary:hover {
+            background: #8B4513;
+            color: white;
+        }
+        
+        .edit-form {
+            display: none;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B4513;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .alert-success {
+            background: #e6ffe6;
+            color: #00b894;
+            border-left: 4px solid #00b894;
+        }
+        
+        .alert-danger {
+            background: #ffe6e6;
+            color: #d63031;
+            border-left: 4px solid #d63031;
+        }
+        
+        .nav-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+        
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+        }
+        
+        .nav-links a:hover {
+            color: #8B4513;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>마이페이지</h1>
+            <p>회원 정보를 관리하세요</p>
+        </div>
+        
+        <div class="content">
+            <!-- 성공/에러 메시지 -->
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            
+            <div class="profile-section">
+                <h2 class="section-title">프로필 정보</h2>
+                
+                <div class="profile-info">
+                    <div class="info-row">
+                        <span class="info-label">사용자명:</span>
+                        <span class="info-value" th:text="${user.username}"></span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">이름:</span>
+                        <span class="info-value" th:text="${user.name}"></span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">이메일:</span>
+                        <span class="info-value" th:text="${user.email}"></span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">권한:</span>
+                        <span class="badge" th:text="${user.role}"></span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">가입일:</span>
+                        <span class="info-value" th:text="${#temporals.format(user.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
+                    </div>
+                </div>
+                
+         <div class="btn-group">
+    <button type="button" class="btn btn-primary" onclick="toggleEditForm()">정보 수정</button>
+
+    <form th:action="@{/logout}" method="post" style="display:inline; flex: 1; min-width: 150px;">
+        <button type="submit" class="btn btn-secondary" style="width: 100%;">로그아웃</button>
+    </form>
+</div>
+                
+                <!-- 수정 폼 -->
+                <div id="editForm" class="edit-form">
+                    <h3 style="margin-bottom: 20px; color: #8B4513;">정보 수정</h3>
+                    
+                    <form th:action="@{/update-profile}" method="post">
+                        <div class="form-group">
+                            <label for="name">이름</label>
+                            <input type="text" id="name" name="name" th:value="${user.name}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">이메일</label>
+                            <input type="email" id="email" name="email" th:value="${user.email}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">새 비밀번호 (변경하지 않으려면 비워두세요)</label>
+                            <input type="password" id="password" name="password" minlength="4">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="toggleEditForm()">취소</button>
+                            <button type="submit" class="btn btn-primary">저장</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a th:href="@{/cafe/index}">홈으로</a>
+                <a th:href="@{/notices}">공지사항</a>
+                <a th:href="@{/qna}">고객문의</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleEditForm() {
+            const editForm = document.getElementById('editForm');
+            const isVisible = editForm.style.display !== 'none';
+            
+            if (isVisible) {
+                editForm.style.display = 'none';
+            } else {
+                editForm.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

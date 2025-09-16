@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<body>
+  <section layout:fragment="content">
+    <h2 class="notice_title">공지사항</h2>
+    <a class="btn btn-primary" th:href="@{/notices/new}">새 글 작성</a>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>작성일</th>
+          <th>조회수</th>
+          <th>첨부파일</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="notice, stat : ${noticePage.content}">
+          <td th:text="${noticePage.totalElements - (noticePage.number * noticePage.size + stat.index)}">1</td>
+          <td>
+            <a th:href="@{/notices/{id}(id=${notice.id})}"
+               th:text="${notice.title}">제목</a>
+          </td>
+          <td th:text="${#temporals.format(notice.createdDate,'yyyy-MM-dd')}">2025-07-30</td>
+          <td th:text="${notice.viewCount}">0</td>
+          <td>
+            <a th:if="${notice.fileStoredName != null and !#strings.isEmpty(notice.fileStoredName)}"
+               th:href="@{/notices/files/{fileName}(fileName=${notice.fileStoredName})}"
+               th:text="${notice.fileOriginalName}">파일명</a>
+            <span th:if="${notice.fileStoredName == null or #strings.isEmpty(notice.fileStoredName)}">-</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 페이지네이션 -->
+    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+      <ul class="pagination">
+        <li class="page-item" th:classappend="${noticePage.first} ? 'disabled'">
+          <a class="page-link" th:href="@{/notices(page=0)}">처음</a>
+        </li>
+        <li class="page-item" th:classappend="${noticePage.first} ? 'disabled'">
+          <a class="page-link" th:href="@{/notices(page=${noticePage.number - 1})}">이전</a>
+        </li>
+
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, noticePage.totalPages - 1)}"
+            th:classappend="${i == noticePage.number} ? 'active'">
+          <a class="page-link" th:href="@{/notices(page=${i})}" th:text="${i + 1}">1</a>
+        </li>
+
+        <li class="page-item" th:classappend="${noticePage.last} ? 'disabled'">
+          <a class="page-link" th:href="@{/notices(page=${noticePage.number + 1})}">다음</a>
+        </li>
+        <li class="page-item" th:classappend="${noticePage.last} ? 'disabled'">
+          <a class="page-link" th:href="@{/notices(page=${noticePage.totalPages - 1})}">끝</a>
+        </li>
+      </ul>
+    </nav>
+
+  </section>
+</body>
+</html>

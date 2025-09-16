@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카페빈 - 커피원두</title>
+<style>
+/* 그리드 레이아웃: 한 줄에 3개 */
+#beanGrid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+	padding: 20px;
+}
+
+.bean-card {
+	position: relative;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.bean-card img {
+	width: 100%;
+	max-width: 250px;
+	display: block;
+	margin: 0 auto;
+}
+/* 이미지 중앙 텍스트 오버레이 */
+.bean-card .overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: #fff;
+	font-weight: 900; /* 글자 두껍게 */
+	font-size: 1.6em; /* 폰트 크기 확대 */
+	-webkit-text-stroke: 1px rgba(0, 0, 0, 0.7); /* 테두리 효과로 선명도 UP */
+	text-shadow: 0 0 4px rgba(0, 0, 0, 0.9), 0 0 6px rgba(0, 0, 0, 0.7);
+	/* 그림자 강화 */
+	pointer-events: none;
+	white-space: nowrap;
+}
+/* 옵션 섹션 항상 표시 */
+.bean-card .options {
+	margin-top: 10px;
+	display: block;
+}
+
+.bean-card .options select, .bean-card .options input[type="number"],
+	.bean-card .options button {
+	display: block;
+	margin: 5px auto;
+}
+
+.bean-card .options select {
+	width: 100%;
+	max-width: 140px;
+	font-size: 0.9em;
+	padding: 3px;
+	text-align: center;
+}
+
+.bean-card .options input[type="number"] {
+	width: 50px;
+	font-size: 0.8em;
+	padding: 2px;
+	text-align: center;
+}
+
+.bean-card .options button {
+	padding: 4px 8px;
+	border: none;
+	border-radius: 4px;
+	background-color: #007BFF;
+	color: #fff;
+	cursor: pointer;
+	font-size: 0.9em;
+}
+
+.bean-card .options button:hover {
+	background-color: #0069d9;
+}
+
+.remove-btn {
+	padding: 2px 6px;
+	font-size: 0.8em;
+	border: none;
+	border-radius: 4px;
+	background-color: #dc3545;
+	color: #fff;
+	cursor: pointer;
+}
+
+.remove-btn:hover {
+	background-color: #c82333;
+}
+
+.page-title {
+	text-align: center;
+	font-size: 2em;
+	margin: 20px 0;
+	font-weight: bold;
+}
+
+#selectionList {
+	padding: 20px;
+	border-top: 1px solid #ccc;
+}
+
+#selectionList h3 {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+#selectionTable {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 10px;
+}
+
+#selectionTable th, #selectionTable td {
+	border: 1px solid #ccc;
+	padding: 8px;
+	text-align: center;
+}
+
+#summaryTotal {
+	text-align: right;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+#orderSection {
+	text-align: center;
+	margin: 20px;
+}
+
+#orderSection button {
+	padding: 10px 20px;
+	font-size: 1em;
+	border: none;
+	border-radius: 4px;
+	background-color: #4CAF50;
+	color: #fff;
+	cursor: pointer;
+}
+
+#orderSection button:hover {
+	background-color: #45a049;
+}
+</style>
+</head>
+<body>
+	<section layout:fragment="content">
+		<div class="page-title">원두 커피</div>
+		<div id="beanGrid"></div>
+		<div id="selectionList">
+			<h3>선택 목록</h3>
+			<table id="selectionTable">
+				<thead>
+					<tr>
+						<th>상품명</th>
+						<th>분쇄도</th>
+						<th>수량</th>
+						<th>소계</th>
+						<th>관리</th>
+					</tr>
+				</thead>
+				<tbody id="selectionItems"></tbody>
+			</table>
+			<div id="summaryTotal">총 가격: 0원</div>
+		</div>
+		<div id="orderSection">
+			<button id="orderBtn" type="button">주문하기</button>
+		</div>
+		<script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const beanData = [
+          { key: 'Blue_Mountain', name: '블루마운틴', price: 15000, img: '/images/blue_mountain.png' },
+          { key: 'Crystal_Mountain', name: '크리스탈 마운틴', price: 12000, img: '/images/crystal_mountain.png' },
+          { key: 'Cona', name: '코나', price: 18000, img: '/images/cona.png' },
+          { key: 'Supremo', name: '수프레모', price: 10000, img: '/images/supremo.png' },
+          { key: 'Matari', name: '마타리', price: 8000, img: '/images/matari.png' },
+          { key: 'Ethiopia_Mocha_Hara', name: '에티오피아 모카 하라', price: 16000, img: '/images/ethiopia_mocha_hara.png' },
+          { key: 'Guatemala_Antigua', name: '과테말라 안티구아', price: 11000, img: '/images/guatemala_antigua.png' },
+          { key: 'Kenya_AA', name: '케냐AA', price: 13000, img: '/images/kenya_aa.png' },
+          { key: 'Yirgacheffe_Sundry', name: '예가체프 선드라이', price: 14000, img: '/images/yirgacheffe_sundry.png' }
+        ];
+        const grindOptions = [
+          { value: 'Whole bean', label: '홀빈' },
+          { value: 'French press', label: '프렌치 프레스' },
+          { value: 'Cold Brew', label: '콜드 브루' },
+          { value: 'Clever Dripper', label: '클레버 드리퍼' },
+          { value: 'Coffee Maker', label: '커피 메이커' },
+          { value: 'Espresso', label: '에스프레소' }
+        ];
+        let selections = [];
+
+        function renderSelection() {
+          const tbody = document.getElementById('selectionItems');
+          tbody.innerHTML = '';
+          let total = 0;
+          selections.forEach((item, idx) => {
+            const tr = document.createElement('tr');
+            ['name','grind','qty','subtotal'].forEach(key => {
+              const td = document.createElement('td');
+              td.textContent = (key==='subtotal'?
+                item.subtotal.toLocaleString()+'원': item[key]);
+              tr.appendChild(td);
+            });
+            const tdDel = document.createElement('td');
+            const btn = document.createElement('button'); btn.className='remove-btn'; btn.textContent='취소';
+            btn.onclick = () => { selections.splice(idx,1); renderSelection(); };
+            tdDel.appendChild(btn); tr.appendChild(tdDel);
+            tbody.appendChild(tr); total+=item.subtotal;
+          });
+          document.getElementById('summaryTotal').textContent='총 가격: '+total.toLocaleString()+'원';
+        }
+
+        function addSelection(bean, grind, qty) {
+          const found = selections.find(i=>i.name===bean.name&&i.grind===grind);
+          if(found){ found.qty+=qty; found.subtotal=bean.price*found.qty; }
+          else{ selections.push({ name:bean.name, grind, qty, subtotal:bean.price*qty }); }
+          renderSelection();
+        }
+
+        function initBeans(){
+          const grid=document.getElementById('beanGrid');
+          beanData.forEach(bean=>{
+            const card=document.createElement('div');card.className='bean-card';
+            const wrap=document.createElement('div');wrap.style.position='relative';
+            const img=document.createElement('img');img.src=bean.img;img.alt=bean.name;
+            img.onerror=()=>img.src='/images/coffee_bag.png';wrap.appendChild(img);
+            const ov=document.createElement('div');ov.className='overlay';ov.textContent=bean.name;wrap.appendChild(ov);
+            card.appendChild(wrap);
+            const opts=document.createElement('div');opts.className='options';
+            const sel=document.createElement('select'); grindOptions.forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.text=o.label;sel.appendChild(opt);}); opts.appendChild(sel);
+            const num=document.createElement('input');num.type='number';num.min=1;num.value=1;opts.appendChild(num);
+            const add=document.createElement('button');add.textContent='추가';add.onclick=()=>addSelection(bean,sel.value,parseInt(num.value));opts.appendChild(add);
+            card.appendChild(opts);grid.appendChild(card);
+          });
+        }
+
+        document.getElementById('orderBtn').onclick=()=>{
+          if(!selections.length) return alert('선택된 상품이 없습니다.');
+          alert(`주문 완료! 총 ${selections.length}개, ${document.getElementById('summaryTotal').textContent}`);
+        };
+
+        initBeans();
+      });
+    </script>
+	</section>
+</body>
+</html>

@@ -1,0 +1,228 @@
+/*전체*/
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fffdf7;
+  color: #333;
+}
+/*탑*/
+header {
+  background-color: rgb(28, 93, 153);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: right;
+  padding: 1rem 2rem;
+}
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/*메뉴*/
+nav {
+  position: relative;
+}
+
+/*메뉴 목록*/
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.3em;
+  margin: 1em;
+}
+/*DG*/
+/*메뉴 자바 글자*/
+nav a.active {
+  color: rgb(	255, 255, 204);
+  font-weight: bold;
+}
+/*DG*/
+/*메뉴 자바 밑줄*/
+#horizontal-underline {
+  position: absolute;
+  height: 4px;
+  background-color: rgb(	255, 255, 204);
+  top: calc(100%); /* 메뉴 아래로 */
+  left: 0;
+  width: 0;
+   transition: left 0.8s ease, width 0.8s ease;
+  z-index: 5;
+}
+
+
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #eee;
+}
+
+.carousel-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 1rem;
+}
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.carousel-item {
+  min-width: 300px;
+  margin: 0 1rem;
+  text-align: center;
+  background: #fefefe;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.carousel-item img {
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.carousel-item p {
+  padding: 0.5rem;
+  font-weight: bold;
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #5a3e36;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1;
+  border-radius: 5px;
+}
+.carousel-btn.prev { left: 0.5rem; }
+.carousel-btn.next { right: 0.5rem; }
+
+
+
+/*커버사진 크기 맞춰줌*/
+.top-banner {
+  width: 100%;       /* 가로는 화면 전체 */
+  height: 400px;     /* 세로 고정 */
+  object-fit: cover; /* 이미지가 잘리지 않고 꽉 차도록 */
+  display: block;    /* 여백 제거 */
+  margin: 0;
+  padding: 0;
+}
+
+/*DG 시작*/
+
+/* 모든페이지 길이 맞춰줌*/
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+
+/*index-section 배경*/
+
+section {
+  padding: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.index-hero {
+  background: url('/images/coffee_index.jpg') no-repeat center;
+  background-size: cover;
+  height: 900px;
+  padding: 100px 100px;
+  color: white;
+  text-align: left;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+/*이벤트 스크롤*/
+.index-hero2 {
+  background: url('/images/coffee_hand.jpg') no-repeat center fixed;
+  background-size: cover;
+  height: 900px;
+  padding: 100px;
+  color: white;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center; /* flex봐야할듯*/
+  align-items: center;
+}
+
+.hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  gap: 50px;
+}
+
+.hero-text h1{
+  flex: 1;
+  font-size: 5em;
+  animation: slide 2s;
+  position: relative;
+}
+
+.hero-text p {
+  font-size: 1.5em;
+  max-width: 600px;
+  animation: slide 1.5s ease-out 0.2s forwards;
+  position: relative;
+}
+
+.photo {
+  flex: 1;
+  max-width: 400px;
+  height: auto;
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(-300px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes disappear {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-300px);
+  }
+}
+
+.index-hero3 {
+  background: url('/images/coffee_bean.jpg') no-repeat center;
+  background-size: cover;
+  height: 900px;
+  padding: 100px 100px;
+  color: white;
+  text-align: left;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}

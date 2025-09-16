@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section layout:fragment="content">
+	<!-- html 주석 -->
+	<table>
+		<thead>
+			<tr>
+				<th>이름</th>
+				<th>전화</th>
+				<th>주소</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="p : ${personList}">
+				<td th:text="${p.name}"></td>
+				<td th:text="${p.tel}"></td>
+				<td th:text="${p.addr}"></td>
+			</tr>
+		</tbody>
+	</table>
+	</section>
+</body>
+</html>

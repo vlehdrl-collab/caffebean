@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Autumn Brew - About</title>
+<style>
+img.responsive {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	/*margin-top: 20px;*/
+}
+
+.image-wrapper {
+	position: relative;
+	/*margin-top: 20px;*/
+}
+
+.text_a {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	background-color: rgba(0, 0, 0, 0);
+	color: white;
+	padding: 10px 15px;
+	border-radius: 8px;
+	font-size: 2rem;
+	font-family: 'cursive';
+}
+</style>
+
+<style>
+.carousel-inner video {
+	width: 100%;
+	height: 450px;
+	object-fit: cover;
+}
+</style>
+</head>
+<body>
+	<section layout:fragment="content">		
+		<!-- =============================================== -->
+		<div class="image-wrapper">
+			<img src="/images/해변3.jpg" alt="해변" class="responsive" />
+			<div class="text_a">시원한 파도소리, 따스한 햇볕과 함께 하는 커피 한잔</div>
+		</div>
+		<h5 style="text-align: center; margin-top: 20px; line-height: 1.5;">
+			2020년, 동해안에 있던 조그마한 흔하고 흔한 그러한 가게에서 커피를 볶기 시작했습니다.<br /> 카페빈은 저희
+			카페에서 고객님이 원하는 다양한 원두콩을 바탕으로 커피를 만들겠다는 목적을 가지고 있습니다 <br /> 일상 속에서
+			지쳐가는 몸과 마음을 이 자연속에서 한 잔의 커피와 함께 풀어보시는 것은 어떠신가요
+		</h5>
+		<br>
+
+		<div class="image-wrapper">
+			<img src="/images/인테리어2.jpg" alt="인테리어" class="responsive" />
+			<div class="text_a">저희 카페는 언제나 고객의 편의와 행복을 위해 최선을 다합니다.</div>
+		</div>
+		<h5 style="text-align: center; margin-top: 20px; line-height: 1.5;">
+			고객님의 입맛과 취향에 맞는 커피를 만들이는 것을 목표로 해오고 있습니다.<br /> 생산지에서 소비자에게 까지 원두의
+			엄선과 커피를 만드는 과정. 그 모든 것에 전력을 다하고 있습니다.
+		</h5>
+	</section>
+</body>
+</html>

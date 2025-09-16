@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section layout:fragment="content">
+	<!-- html 주석 -->
+	<table>
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>이름</th>
+				<th>전화</th>
+				<th>주소</th>
+				<th>학교</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="p : ${stdList}">
+				<td th:text="${pStat.count}"></td>
+				<td>
+					<a th:href="@{/showStudentDetail/{id}(id=${p.id})}" 
+						th:text="${p.name}"></a>
+				</td>
+				<td th:text="${p.tel}"></td>
+				<td th:text="${p.addr}"></td>
+				<td th:text="${p.school}"></td>
+			</tr>
+		</tbody>
+	</table>
+	<button class="btn btn-primary" th:onclick="|location.href='@{/insStdForm}'|">데이터 추가</button>
+	<a th:href="@{/insStdForm}">데이터 추가</a>
+	</section>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<section layout:fragment="content">
+	<!-- html 주석 -->
+	<table>
+		<thead>
+			<tr>
+				<th>이름</th>
+				<th>전화</th>
+				<th>주소</th>
+				<th>학교</th>
+				<th>이메일</th>
+				<th>카톡ID</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td th:text="${stdDetail.name}"></td>
+				<td th:text="${stdDetail.tel}"></td>
+				<td th:text="${stdDetail.addr}"></td>
+				<td th:text="${stdDetail.school}"></td>
+				<td th:text="${stdDetail.email}"></td>
+				<td th:text="${stdDetail.kakao}"></td>
+			</tr>
+		</tbody>
+	</table><br>
+	<button class="btn btn-primary" th:onclick="|location.href='@{/insStdForm}'|">데이터 추가</button>
+	<!-- <a th:href="@{/insPerForm}">데이터 추가</a> -->
+	<button class="btn btn-primary" th:onclick="|location.href='@{/getStdDbList}'|">데이터 보기</button>
+	<button class="btn btn-primary" th:onclick="|location.href='@{/deleteStudent/{id}(id=${stdDetail.id})}'|">데이터 삭제</button>
+	<button class="btn text-white" style="background-color: #800080;" th:onclick="|location.href='@{/editStdForm/{id}(id=${stdDetail.id})}'|">데이터 수정</button>
+	</section>
+</body>
+</html>
+
+
+

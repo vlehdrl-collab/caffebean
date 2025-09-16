@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - Cafe♡Bean</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B4513, #D2691E, #F5E6D3);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            color: #8B4513;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #8B4513;
+        }
+        
+        .input-valid {
+            border-color: #27ae60 !important;
+        }
+        
+        .input-invalid {
+            border-color: #e74c3c !important;
+        }
+        
+        .validation-message {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .validation-success {
+            color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .validation-error {
+            color: #e74c3c;
+            background: #ffeaea;
+        }
+        
+        .validation-checking {
+            color: #3498db;
+            background: #ebf3fd;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-bottom: 20px;
+        }
+        
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .register-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .divider {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .login-link {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #8B4513;
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .login-link:hover {
+            background: #8B4513;
+            color: white;
+        }
+        
+        .home-link {
+            margin-top: 20px;
+        }
+        
+        .home-link a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .home-link a:hover {
+            color: #8B4513;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .alert-danger {
+            background: #ffe6e6;
+            color: #d63031;
+            border-left: 4px solid #d63031;
+        }
+        
+        .alert-success {
+            background: #e6ffe6;
+            color: #00b894;
+            border-left: 4px solid #00b894;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">Cafe♡Bean</div>
+        <div class="subtitle">회원가입하고 특별한 혜택을 받아보세요</div>
+        
+        <!-- 에러/성공 메시지 -->
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        
+        <form th:action="@{/register}" method="post" th:object="${user}" id="registerForm">
+            <div class="form-group">
+                <label for="username">사용자명 <span class="required">*</span></label>
+                <input type="text" id="username" name="username" th:field="*{username}" required minlength="3">
+                <div id="usernameValidation" class="validation-message" style="display: none;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">비밀번호 <span class="required">*</span></label>
+                <input type="password" id="password" name="password" th:field="*{password}" required minlength="4">
+                <div id="passwordValidation" class="validation-message" style="display: none;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">비밀번호 확인 <span class="required">*</span></label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <div id="confirmPasswordValidation" class="validation-message" style="display: none;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">이메일 <span class="required">*</span></label>
+                <input type="email" id="email" name="email" th:field="*{email}" required>
+                <div id="emailValidation" class="validation-message" style="display: none;"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">이름 <span class="required">*</span></label>
+                <input type="text" id="name" name="name" th:field="*{name}" required minlength="2">
+                <div id="nameValidation" class="validation-message" style="display: none;"></div>
+            </div>
+            
+            <button type="submit" class="register-btn" id="submitBtn">회원가입</button>
+        </form>
+        
+        <div class="divider">
+            <span>이미 계정이 있으신가요?</span>
+        </div>
+        
+        <a th:href="@{/login}" class="login-link">로그인</a>
+        
+        <div class="home-link">
+            <a th:href="@{/cafe/index}">← 홈으로 돌아가기</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const nameInput = document.getElementById('name');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            let validationState = {
+                username: false,
+                email: false,
+                password: false,
+                confirmPassword: false,
+                name: false
+            };
+            
+            // 디바운싱을 위한 타이머
+            let usernameTimer, emailTimer;
+            
+            // 사용자명 유효성 검사 (수정된 부분)
+            usernameInput.addEventListener('input', function() {
+                clearTimeout(usernameTimer);
+                const username = this.value.trim();
+                
+                if (username.length === 0) {
+                    hideValidation('username');
+                    return;
+                }
+                
+                if (username.length < 3) {
+                    showValidation('username', false, '사용자명은 3자 이상이어야 합니다.');
+                    return;
+                }
+                
+                // 입력 후 500ms 후에 서버 확인
+                usernameTimer = setTimeout(async () => {
+                    await checkUsernameAvailability(username);
+                }, 500);
+            });
+            
+            // 이메일 유효성 검사 (수정된 부분)
+            emailInput.addEventListener('input', function() {
+                clearTimeout(emailTimer);
+                const email = this.value.trim();
+                
+                if (email.length === 0) {
+                    hideValidation('email');
+                    return;
+                }
+                
+                if (!isValidEmail(email)) {
+                    showValidation('email', false, '올바른 이메일 형식을 입력해주세요.');
+                    return;
+                }
+                
+                // 입력 후 500ms 후에 서버 확인
+                emailTimer = setTimeout(async () => {
+                    await checkEmailAvailability(email);
+                }, 500);
+            });
+            
+            // 서버에 사용자명 확인 요청
+            async function checkUsernameAvailability(username) {
+                try {
+                    showValidation('username', null, '사용자명 확인 중...', 'checking');
+                    
+                    const response = await fetch(`/check-username?username=${encodeURIComponent(username)}`);
+                    
+                    if (!response.ok) {
+                        throw new Error('서버 응답 오류');
+                    }
+                    
+                    const data = await response.json();
+                    showValidation('username', data.available, data.message);
+                    
+                } catch (error) {
+                    console.error('Username check error:', error);
+                    showValidation('username', false, '사용자명 확인 중 네트워크 오류가 발생했습니다.');
+                }
+            }
+            
+            // 서버에 이메일 확인 요청
+            async function checkEmailAvailability(email) {
+                try {
+                    showValidation('email', null, '이메일 확인 중...', 'checking');
+                    
+                    const response = await fetch(`/check-email?email=${encodeURIComponent(email)}`);
+                    
+                    if (!response.ok) {
+                        throw new Error('서버 응답 오류');
+                    }
+                    
+                    const data = await response.json();
+                    showValidation('email', data.available, data.message);
+                    
+                } catch (error) {
+                    console.error('Email check error:', error);
+                    showValidation('email', false, '이메일 확인 중 네트워크 오류가 발생했습니다.');
+                }
+            }
+            
+            // 비밀번호 유효성 검사
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                
+                if (password.length === 0) {
+                    hideValidation('password');
+                    return;
+                }
+                
+                if (password.length < 4) {
+                    showValidation('password', false, '비밀번호는 4자 이상이어야 합니다.');
+                } else {
+                    showValidation('password', true, '사용 가능한 비밀번호입니다.');
+                }
+                
+                // 비밀번호 확인 재검사
+                if (confirmPasswordInput.value) {
+                    confirmPasswordInput.dispatchEvent(new Event('input'));
+                }
+            });
+            
+            // 비밀번호 확인 유효성 검사
+            confirmPasswordInput.addEventListener('input', function() {
+                const password = passwordInput.value;
+                const confirmPassword = this.value;
+                
+                if (confirmPassword.length === 0) {
+                    hideValidation('confirmPassword');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showValidation('confirmPassword', false, '비밀번호가 일치하지 않습니다.');
+                } else {
+                    showValidation('confirmPassword', true, '비밀번호가 일치합니다.');
+                }
+            });
+            
+            // 이름 유효성 검사
+            nameInput.addEventListener('input', function() {
+                const name = this.value.trim();
+                
+                if (name.length === 0) {
+                    hideValidation('name');
+                    return;
+                }
+                
+                if (name.length < 2) {
+                    showValidation('name', false, '이름은 2자 이상이어야 합니다.');
+                } else {
+                    showValidation('name', true, '올바른 이름입니다.');
+                }
+            });
+            
+            function showValidation(field, isValid, message, type = null) {
+                const input = document.getElementById(field);
+                const validation = document.getElementById(field + 'Validation');
+                
+                if (isValid !== null) {
+                    validationState[field] = isValid;
+                }
+                
+                if (type === 'checking') {
+                    input.classList.remove('input-valid', 'input-invalid');
+                    validation.className = 'validation-message validation-checking';
+                } else if (isValid) {
+                    input.classList.remove('input-invalid');
+                    input.classList.add('input-valid');
+                    validation.className = 'validation-message validation-success';
+                } else {
+                    input.classList.remove('input-valid');
+                    input.classList.add('input-invalid');
+                    validation.className = 'validation-message validation-error';
+                }
+                
+                validation.textContent = message;
+                validation.style.display = 'block';
+                
+                updateSubmitButton();
+            }
+            
+            function hideValidation(field) {
+                const input = document.getElementById(field);
+                const validation = document.getElementById(field + 'Validation');
+                
+                validationState[field] = false;
+                input.classList.remove('input-valid', 'input-invalid');
+                validation.style.display = 'none';
+                
+                updateSubmitButton();
+            }
+            
+            function updateSubmitButton() {
+                const allValid = Object.values(validationState).every(state => state === true);
+                submitBtn.disabled = !allValid;
+            }
+            
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+    </script>
+</body>
+</html>

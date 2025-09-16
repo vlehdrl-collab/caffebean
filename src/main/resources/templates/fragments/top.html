@@ -1,0 +1,115 @@
+<div th:fragment="topFragment" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<img src="/images/coffee1920.jpg" class="top-banner" alt="Banner" />
+<header>
+<div class="logo">Cafe♡Bean</div>
+<nav>
+<div id="horizontal-underline"></div>
+<ul>
+<li><a th:href="@{/cafe/index}">Home</a></li>
+<li><a th:href="@{/cafe/about}">우리는</a></li>
+<li class="has-submenu"><a href="#" class="menu-toggle">커피주문
+<span class="arrow">▾</span>
+</a>
+<ul class="submenu">
+<li><a th:href="@{/cafe/coffee}">원두커피</a></li>
+<li><a th:href="@{/cafe/bakery}">베이커리</a></li>
+</ul></li>
+<li><a th:href="@{/cafe/location}">찾아오기</a></li>
+<li><a th:href="@{/notices}">공지사항</a></li>
+<li><a th:href="@{/qna}">고객문의</a></li>
+
+<!-- 로그인 상태에 따른 메뉴 표시 -->
+<li sec:authorize="!isAuthenticated()">
+    <a th:href="@{/login}" class="auth-link login-link">로그인</a>
+</li>
+<li sec:authorize="!isAuthenticated()">
+    <a th:href="@{/register}" class="auth-link register-link">회원가입</a>
+</li>
+<li sec:authorize="isAuthenticated()" class="has-submenu">
+    <a href="#" class="menu-toggle user-menu">
+        <span sec:authentication="principal.name"></span>님
+        <span class="arrow">▾</span>
+    </a>
+    <ul class="submenu user-submenu">
+        <li><a th:href="@{/mypage}">마이페이지</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">관리자</a></li>
+        <li><form th:action="@{/logout}" method="post" style="display:inline;">
+    <button type="submit" class="btn-logout">로그아웃</button>
+</form></li>
+    </ul>
+</li>
+</ul>
+</nav>
+</header>
+
+<style>
+/* 기존 스타일에 추가할 CSS */
+.auth-link {
+    padding: 8px 16px !important;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.login-link {
+    background: transparent;
+    color: rgb(255, 255, 255) !important;
+    
+}
+
+
+
+.register-link {
+    
+    color: white !important;
+    
+}
+
+.register-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+}
+
+.user-menu {
+    color: rgb(255,255,255);
+    font-weight: bold;
+    position: relative;
+}
+
+.user-menu::before {
+    content: "👤";
+    margin-right: 5px;
+}
+
+.user-submenu {
+    min-width: 150px;
+    right: 0;
+}
+
+.user-submenu li a {
+    padding: 12px 20px;
+    color: rgb(255,255,255);
+    transition: all 0.3s ease;
+}
+
+.user-submenu li a:hover {
+    background: rgb(0, 64, 128);
+    color: rgb(255,255,255);
+    padding-left: 25px;
+}
+.btn-logout {
+	min-width: 150px;
+    right: 0;
+    
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .auth-link {
+        display: block;
+        margin: 5px 0;
+        text-align: center;
+    }
+}
+</style>
+</div>
