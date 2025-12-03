@@ -17,3 +17,9 @@
 <img width="70%" alt="Image" src="https://github.com/user-attachments/assets/2aac61c5-842b-4512-baa1-fc25a78e6fbb" />
 <img width="70%" alt="Image" src="https://github.com/user-attachments/assets/c3bee84d-7754-435f-a716-243ecb21ec77" />
 <img width="70%" alt="Image" src="https://github.com/user-attachments/assets/fbe112d7-d980-400d-807a-a7fbed99da4e" />
+
+---
+<h3>프로젝트를 진행하면서 느낀점</h3>
+프로젝트 인원이 3명으로 줄어든데다, 팀원들은 실력이 부족한분들이었기에 제 기여도가 높아질수밖에는 없었습니다. 책과 유튜브를 보면서
+앞선프로젝트에서 해보지 못했던 기능들을 넣어보고, 게시판은 바이브코딩을 하면서 기간내에 마무리할 수 있었습니다. 바이브코딩을 했던 내용을
+코드리딩하는게 어렵긴했지만, 기간내에 완성시키는게 목적이었기에 어쩔 수 없엇던것 같습니다. 시간된다면 기능들을 더 추가해볼 생각입니다.
