@@ -5,6 +5,7 @@
 <br>공지사항(기여도0%) / QnA게시판(기여도100%)</br>
 <br>로그인 / 회원가입 기능 추가 (기여도 100%)</br>
 <br>브라우저 실행시 localhost:8083</br>
+<br> 프로젝트 전체기여도 : 50% </br>
 <p align="center">
 
 <img width="70%" alt="Image" src="https://github.com/user-attachments/assets/aaaa243b-5909-4054-8e6e-e2b2b274c9ed" />
